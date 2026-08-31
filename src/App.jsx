@@ -1,13 +1,19 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TestApi from './TestApi';
+// src/App.jsx
+import { HashRouter, Route, Routes } from "react-router-dom";
+import Home from "./Home";
+import Login from "./Login";
+import Item from "./Item";
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
-        <Route path="/test_api" element={<TestApi />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Home />}>
+          <Route path="item" element={<Item />} />
+        </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
