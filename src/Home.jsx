@@ -3,22 +3,27 @@ import AppBar from "@mui/material/AppBar";
 import Button from "@mui/material/Button";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Box from "@mui/material/Box";
 import { useContext, useEffect } from "react";
 import { UserContext } from "./context/UserContext";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Home() {
   const navigate = useNavigate();
-  const { user, isLoggedIn, isInitializing, logout } = useContext(UserContext);
+  const { user, isLoggedIn, isInitializing } = useContext(UserContext);
 
   useEffect(() => {
     if (!isLoggedIn && !isInitializing) {
       navigate("/login");
     }
-  }, [isInitializing, isLoggedIn]);
+  }, [isInitializing]);
 
   if (isInitializing) return <></>;
+
+  const isAdmin = user?.id === "-1";
 
   return (
     <div>
@@ -35,11 +40,25 @@ export default function Home() {
           >
             Item
           </Button>
+          {isAdmin && (
+            <Button
+              color="inherit"
+              onClick={() => {
+                navigate("/user");
+              }}
+            >
+              User
+            </Button>
+          )}
           <Button
             color="inherit"
             onClick={async () => {
-              await logout();
-              navigate("/login");
+              const result = await fetch(`${API_URL}/api/auth/logout`, {
+                credentials: "include",
+              });
+              if (result.ok) {
+                window.location.reload(true);
+              }
             }}
           >
             Logout
